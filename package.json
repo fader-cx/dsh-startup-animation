@@ -1,0 +1,40 @@
+{
+  "name": "dsh-codex-startup-animation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "为 DeepSeek Harness 加上 Codex 风格的开场动画与可自定义常驻背景（移植自 yanami-sec/codex-startup-animation-windows）",
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "splash-screen",
+    "startup-animation"
+  ],
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "client": {
+      "platform": "web",
+      "immediately": true
+    },
+    "bundle": {
+      "patch": [
+        "./cordis.patch.yml"
+      ]
+    }
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "README.md",
+    "MODDING.md",
+    "THIRD_PARTY_NOTICES.md"
+  ]
+}

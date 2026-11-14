@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>DSH 开场动画插件 · 隔离预览</title>
+<style>
+  /* 垫一个假的宿主界面，用来判断覆盖层是否真的盖住了应用，以及背景层是否生效。 */
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: -apple-system, "Segoe UI", "PingFang SC", sans-serif;
+    background: #12121a; color: #d8d8e2;
+    display: grid; grid-template-columns: 260px 1fr; height: 100vh; overflow: hidden;
+  }
+  aside { background: #17171f; border-right: 1px solid #2a2a36; padding: 18px; font-size: 13px; }
+  main { padding: 28px; font-size: 13px; line-height: 1.9; }
+  h1 { font-size: 15px; margin: 0 0 14px; color: #eaeaf2; }
+  code { background: #1e1e28; padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<aside>
+  <h1>深寻 Harness（模拟）</h1>
+  <div>会话 · 工作区 · 设置</div>
+</aside>
+<main>
+  <h1>这里是 Harness 的真实界面背景</h1>
+  <p>如果开场动画没有盖住这一段文字，说明覆盖层没有生效。</p>
+  <p>动画结束后应当自动回到这个界面，并按「背景显现程度」留下常驻背景。</p>
+  <p>按 <code>Esc</code> 可即时跳过；之后按 <code>Ctrl+Alt+B</code> 可重新打开图片与背景设置。</p>
+  <p>预览页里没有 Electron 的原生标题栏按钮，那部分只能在 DSH 窗口里验证。</p>
+</main>
+
+<script>
+  // 复刻 DSH 的模块装载入口：bundle 只注册 factory，export 出 apply/inject。
+  window.__ModuleLoader__ = {
+    load(definition) {
+      const exported = definition.factory((id) => { throw new Error("unexpected require: " + id); });
+      if (Array.isArray(exported.inject) === false) throw new Error("bundle 没有导出 inject");
+      if (typeof exported.apply !== "function") throw new Error("bundle 没有导出 apply");
+      exported.apply({});
+    },
+  };
+</script>
+<script src="lib/client.js"></script>
+<script>
+  // 状态探针：把覆盖层与背景层的真实状态持续写进标题，便于远程核对。
+  (function report() {
+    const frame = document.getElementById("dsh-startup-frame");
+    const root = document.documentElement;
+    let win = null, scene = null, art = null;
+    try {
+      win = frame && frame.contentWindow;
+      scene = win && win.document.querySelector(".window");
+      art = win && win.document.querySelector(".artwork");
+    } catch (error) { /* 跨源或尚未就绪 */ }
+    const parts = [
+      "frame=" + (frame ? 1 : 0),
+      "scene=" + (scene ? 1 : 0),
+      "stage=" + (scene ? scene.dataset.stage || "?" : "-"),
+      "elapsed=" + (scene ? scene.dataset.elapsed || "0" : "-"),
+      "finished=" + (scene && scene.classList.contains("finished") ? 1 : 0),
+      "wallpaper=" + (root.hasAttribute("data-dsh-wallpaper") ? 1 : 0),
+      "wash=" + (root.style.getPropertyValue("--dsh-wallpaper-wash") || "-"),
+      "art=" + (art && art.naturalWidth ? art.naturalWidth + "x" + art.naturalHeight : "0"),
+      "canvas=" + (scene && win.document.querySelector(".line-art")
+        ? win.document.querySelector(".line-art").width + "x" + win.document.querySelector(".line-art").height
+        : "-"),
+    ];
+    document.title = "st|" + parts.join("|");
+    setTimeout(report, 400);
+  })();
+</script>
+</body>
+</html>
