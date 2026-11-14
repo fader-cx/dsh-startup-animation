@@ -3,8 +3,8 @@
 给 **DeepSeek Harness** 加上一段 Codex 风格的开场动画，以及可自定义的常驻背景。
 
 > **灵感与动画来源**：[yanami-sec/codex-startup-animation-windows](https://github.com/yanami-sec/codex-startup-animation-windows)
-> —— 本项目的全部视觉与动画逻辑来自该仓库，本仓库只做「搬到 DSH 上」的移植与扩展。
-> 授权状态见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+> —— 本项目的视觉与动画逻辑灵感来源于该仓库，完成了「搬到 DSH 上」的移植与扩展，
+> 并对动画演出效果做了升级完善。授权状态见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 ## 这是什么
 
